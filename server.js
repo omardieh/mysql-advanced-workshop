@@ -23,7 +23,47 @@ app.get("/products", (req, res) => {
   connection
     .promise()
     .query(
-      "SELECT products.*, images.url, categories.title AS category_title FROM products LEFT JOIN images ON products.image_id = images.image_id LEFT JOIN categories ON products.category_id = categories.category_id"
+      "SELECT products.product_id, products.title, products.price, images.url, categories.title AS category_title FROM products INNER JOIN images ON products.image_id = images.image_id LEFT JOIN categories ON products.category_id = categories.category_id"
+    )
+    .then(([results]) => {
+      res.send(results);
+    })
+    .catch((e) => console.log(e));
+});
+
+app.get("/products/:id", (req, res) => {
+  const { id } = req.params;
+  connection
+    .promise()
+    .query(
+      "SELECT products.product_id, products.title, products.price, images.url, categories.title AS category_title FROM products INNER JOIN images ON products.image_id = images.image_id LEFT JOIN categories ON products.category_id = categories.category_id WHERE products.product_id= ?",
+      [id]
+    )
+    .then(([results]) => {
+      res.send(results);
+    })
+    .catch((e) => console.log(e));
+});
+
+app.get("/categories", (req, res) => {
+  connection
+    .promise()
+    .query(
+      "SELECT categories.category_id, categories.title, images.url FROM categories LEFT JOIN images ON categories.image_id = images.image_id"
+    )
+    .then(([results]) => {
+      res.send(results);
+    })
+    .catch((e) => console.log(e));
+});
+
+app.get("/categories/:id", (req, res) => {
+  const { id } = req.params;
+  connection
+    .promise()
+    .query(
+      "SELECT categories.category_id, categories.title, images.url FROM categories LEFT JOIN images ON categories.image_id = images.image_id WHERE categories.category_id= ?",
+      [id]
     )
     .then(([results]) => {
       res.send(results);
