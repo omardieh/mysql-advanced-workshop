@@ -36,7 +36,7 @@ app.get("/products/:id", (req, res) => {
   connection
     .promise()
     .query(
-      "SELECT products.product_id, products.title, products.price, images.url, categories.title AS category FROM products INNER JOIN images ON products.image_id = images.image_id JOIN categories ON products.category_id = categories.category_id WHERE products.product_id= ?",
+      "SELECT products.product_id, products.title, products.price, images.url, categories.title AS category FROM products INNER JOIN images ON products.image_id = images.image_id LEFT JOIN categories ON products.category_id = categories.category_id WHERE products.product_id= ?",
       [id]
     )
     .then(([results]) => {
@@ -49,7 +49,7 @@ app.get("/categories", (req, res) => {
   connection
     .promise()
     .query(
-      "SELECT categories.category_id, categories.title, images.url FROM categories JOIN images ON categories.image_id = images.image_id"
+      "SELECT categories.category_id, categories.title, images.url FROM categories LEFT JOIN images ON categories.image_id = images.image_id"
     )
     .then(([results]) => {
       res.send(results);
@@ -62,7 +62,7 @@ app.get("/categories/:id", (req, res) => {
   connection
     .promise()
     .query(
-      "SELECT categories.category_id, categories.title, images.url FROM categories JOIN images ON categories.image_id = images.image_id WHERE categories.category_id= ?",
+      "SELECT categories.category_id, categories.title, images.url FROM categories LEFT JOIN images ON categories.image_id = images.image_id WHERE categories.category_id= ?",
       [id]
     )
     .then(([results]) => {
